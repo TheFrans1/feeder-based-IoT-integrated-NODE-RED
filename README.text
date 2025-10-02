@@ -1,0 +1,6 @@
+secara sederhana alat ini memiliki 2 mikrokontroler yaitu esp32 dan esp32 cam, 
+dimana esp32-cam hannya berfungsi untuk menamkap foto dan mengirimnya ke node-red
+melalui mqtt dan esp32 berfungsi untuk mengantur beberapa sensor dan aktuator yang terhubung dengannya
+serta mengirimkan data dari sensor ke node-red melalui mqtt. 
+semua data yang di peroleh oleh kedua esp akan dikirim ke node-red melalui protokol mqtt. dan node-red 
+berfungsi untuk menerima dan mengelola data kemudian akan di tampilkan kedalam sebuah dashboard
