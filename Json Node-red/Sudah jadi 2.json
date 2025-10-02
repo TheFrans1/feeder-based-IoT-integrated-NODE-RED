@@ -1,0 +1,1226 @@
+[
+    {
+        "id": "c1459de4486b7052",
+        "type": "tab",
+        "label": "Waktu Validator",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "8ff1c18937c40393",
+        "type": "ui_text_input",
+        "z": "c1459de4486b7052",
+        "name": "Waktu 1",
+        "label": "Waktu 1 ",
+        "tooltip": "Format (HH:MM)",
+        "group": "2bcba33ae4516e00",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "waktu1",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 100,
+        "y": 40,
+        "wires": [
+            [
+                "db7a97032313ef99"
+            ]
+        ]
+    },
+    {
+        "id": "db7a97032313ef99",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "Validasi Waktu 1",
+        "func": "const waktu = msg.payload.substring(0, 5);\n\n// Validasi format\nif (waktu.length !== 5) {\n    msg.error = \"Panjang harus 5 karakter\";\n    msg.valid = false;\n} else if (!/^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/.test(waktu)) {\n    msg.error = \"Format tidak valid\";\n    msg.valid = false;\n} else {\n    msg.payload = waktu;\n    msg.valid = true;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 40,
+        "wires": [
+            [
+                "8800e13a4dd3723a",
+                "e9d2f3a09ec0c4dc"
+            ]
+        ]
+    },
+    {
+        "id": "f85cd4955643c3e7",
+        "type": "ui_text_input",
+        "z": "c1459de4486b7052",
+        "name": "Waktu 2",
+        "label": "Waktu 2 ",
+        "tooltip": "Format (HH:MM)",
+        "group": "2bcba33ae4516e00",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "waktu2",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 100,
+        "y": 100,
+        "wires": [
+            [
+                "387b5fb1b75d4de4"
+            ]
+        ]
+    },
+    {
+        "id": "387b5fb1b75d4de4",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "Validasi Waktu 2",
+        "func": "const waktu = msg.payload.substring(0, 5);\n\n// Validasi format\nif (waktu.length !== 5) {\n    msg.error = \"Panjang harus 5 karakter\";\n    msg.valid = false;\n} else if (!/^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/.test(waktu)) {\n    msg.error = \"Format tidak valid\";\n    msg.valid = false;\n} else {\n    msg.payload = waktu;\n    msg.valid = true;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 100,
+        "wires": [
+            [
+                "8800e13a4dd3723a",
+                "e9d2f3a09ec0c4dc"
+            ]
+        ]
+    },
+    {
+        "id": "e9d2f3a09ec0c4dc",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "Status Validasi",
+        "func": "// Update status terbaru\nif (msg.topic === 'waktu1') {\n    flow.set('waktu1', msg);\n} else if (msg.topic === 'waktu2') {\n    flow.set('waktu2', msg);\n} else if (msg.topic === 'durasi') {\n    flow.set('durasi', msg.payload); // TAMBAHKAN INI\n}\n\nconst waktu1 = flow.get('waktu1') || {};\nconst waktu2 = flow.get('waktu2') || {};\nconst durasi = flow.get('durasi'); // AMBIL DARI FLOW\n\n// Cek status semua\nif (waktu1.valid && waktu2.valid && durasi) {\n    // Format pesan baru tanpa JSON.stringify\n    const pesan = `Waktu 1 = ${waktu1.payload}, Waktu 2 = ${waktu2.payload}, Durasi: ${durasi} s`;\n    return { \n        payload: pesan, \n        valid: true \n    };\n} else {\n    return { \n        payload: \"Menunggu data lengkap...\", \n        valid: false \n    };\n}",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 180,
+        "wires": [
+            [
+                "8800e13a4dd3723a"
+            ]
+        ]
+    },
+    {
+        "id": "75e05606b51981a6",
+        "type": "ui_dropdown",
+        "z": "c1459de4486b7052",
+        "name": "Pilih Durasi",
+        "label": "Durasi",
+        "tooltip": "",
+        "place": "",
+        "group": "2bcba33ae4516e00",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "15 Detik",
+                "value": "15",
+                "type": "str"
+            },
+            {
+                "label": "25 Detik",
+                "value": "25",
+                "type": "str"
+            }
+        ],
+        "topic": "durasi",
+        "topicType": "str",
+        "className": "",
+        "x": 110,
+        "y": 180,
+        "wires": [
+            [
+                "e9d2f3a09ec0c4dc"
+            ]
+        ]
+    },
+    {
+        "id": "5399ee5c094303f7",
+        "type": "ui_button",
+        "z": "c1459de4486b7052",
+        "name": "",
+        "group": "2bcba33ae4516e00",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Kirim Data",
+        "tooltip": "",
+        "color": "black",
+        "bgcolor": "",
+        "className": "",
+        "icon": "send",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "kirim",
+        "topicType": "str",
+        "x": 110,
+        "y": 240,
+        "wires": [
+            [
+                "2448f8e139c7d258"
+            ]
+        ]
+    },
+    {
+        "id": "2448f8e139c7d258",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "Validasi Akhir",
+        "func": "const waktu1 = flow.get('waktu1') || {};\nconst waktu2 = flow.get('waktu2') || {};\nconst durasi = flow.get('durasi');\n\n// Validasi kelengkapan data\nif (!waktu1.payload || !waktu2.payload || !durasi) {\n    return [{ \n        payload: \"ERROR, Pastikan Waktu 1,2 terisi & durasi dipilih\",\n        topic: \"error\"\n    }, null];\n}\n\n// Validasi format waktu\nif (!waktu1.valid || !waktu2.valid) {\n    return [{\n        payload: \"ERROR, Format waktu tidak valid!\",\n        topic: \"error\"\n    }, null];\n}\n\n// Buat dua pesan: satu untuk status, satu untuk MQTT\nconst pesanStatus = `Sukses mengatur Waktu 1 = ${waktu1.payload}, Waktu 2 = ${waktu2.payload}, Durasi: ${durasi} s`;\nconst pesanMQTT = {\n    waktu1: waktu1.payload,\n    waktu2: waktu2.payload,\n    durasi: parseInt(durasi)\n};\n\nreturn [\n    { payload: pesanStatus, topic: \"sukses\" },\n    { payload: JSON.stringify(pesanMQTT), topic: \"data/waktu\" }\n];",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 240,
+        "wires": [
+            [
+                "8800e13a4dd3723a",
+                "359ae12576d5ca54"
+            ]
+        ]
+    },
+    {
+        "id": "8800e13a4dd3723a",
+        "type": "ui_text",
+        "z": "c1459de4486b7052",
+        "group": "2bcba33ae4516e00",
+        "order": 3,
+        "width": 6,
+        "height": 2,
+        "name": "",
+        "label": "Status:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "{{msg.topic === 'error' ? 'error' : ''}}",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 540,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "359ae12576d5ca54",
+        "type": "mqtt out",
+        "z": "c1459de4486b7052",
+        "name": "MQTT Publisher",
+        "topic": "/W1/W2/D",
+        "qos": "0",
+        "retain": false,
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5b85f8102134f78f",
+        "x": 520,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "e624223a85b5688c",
+        "type": "mqtt in",
+        "z": "c1459de4486b7052",
+        "name": "Waktu sekarang",
+        "topic": "/jadwal/waktu",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "5b85f8102134f78f",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 300,
+        "wires": [
+            [
+                "5d8087ec176489e1",
+                "935d7370f713c680"
+            ]
+        ]
+    },
+    {
+        "id": "5d8087ec176489e1",
+        "type": "ui_text",
+        "z": "c1459de4486b7052",
+        "group": "66105bbcfc927517",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Waktu :",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "style": true,
+        "font": "Palatino Linotype,Palatino,Book Antiqua,serif",
+        "fontSize": "18",
+        "color": "#0a0a0a",
+        "x": 280,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "beaab9d1cb188a83",
+        "type": "mqtt in",
+        "z": "c1459de4486b7052",
+        "name": "Settingan",
+        "topic": "/jadwal/data",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "5b85f8102134f78f",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 100,
+        "y": 360,
+        "wires": [
+            [
+                "a5edcad8272ac255"
+            ]
+        ]
+    },
+    {
+        "id": "a5edcad8272ac255",
+        "type": "ui_text",
+        "z": "c1459de4486b7052",
+        "group": "66105bbcfc927517",
+        "order": 2,
+        "width": 7,
+        "height": 1,
+        "name": "",
+        "label": "Telah Diatur :",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "style": true,
+        "font": "Palatino Linotype,Palatino,Book Antiqua,serif",
+        "fontSize": "18",
+        "color": "#000000",
+        "x": 290,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "040cf2db499828fa",
+        "type": "mqtt in",
+        "z": "c1459de4486b7052",
+        "name": "Status",
+        "topic": "/jadwal/status",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "5b85f8102134f78f",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 90,
+        "y": 440,
+        "wires": [
+            [
+                "72851e5b7af1c050",
+                "56def2e2aa0413c6"
+            ]
+        ]
+    },
+    {
+        "id": "56def2e2aa0413c6",
+        "type": "ui_text",
+        "z": "c1459de4486b7052",
+        "group": "66105bbcfc927517",
+        "order": 1,
+        "width": 7,
+        "height": 1,
+        "name": "",
+        "label": "Status :",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "style": true,
+        "font": "Georgia,Georgia,serif",
+        "fontSize": "18",
+        "color": "#000000",
+        "x": 280,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "9f03b5af5f109734",
+        "type": "mqtt in",
+        "z": "c1459de4486b7052",
+        "name": "pelet",
+        "topic": "/pellet/level",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "5b85f8102134f78f",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 90,
+        "y": 580,
+        "wires": [
+            [
+                "c8bf4e49999b1856",
+                "cf059481218b60c8"
+            ]
+        ]
+    },
+    {
+        "id": "4bdb822dc82fd1ec",
+        "type": "mqtt in",
+        "z": "c1459de4486b7052",
+        "name": "suhu",
+        "topic": "/suhu/kolam",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "5b85f8102134f78f",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 90,
+        "y": 700,
+        "wires": [
+            [
+                "ab1efbf9d2895579",
+                "fb725835e04102bc",
+                "5b1379ef603c5d3b"
+            ]
+        ]
+    },
+    {
+        "id": "ab1efbf9d2895579",
+        "type": "ui_gauge",
+        "z": "c1459de4486b7052",
+        "name": "",
+        "group": "3ccdc502234ac266",
+        "order": 1,
+        "width": 7,
+        "height": 6,
+        "gtype": "gage",
+        "title": "Suhu",
+        "label": "Celsius",
+        "format": "{{value}}",
+        "min": "18",
+        "max": "40",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 130,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "cb4b67f747c99511",
+        "type": "mqtt in",
+        "z": "c1459de4486b7052",
+        "name": "kekeruhan",
+        "topic": "/kolam/kekeruhan",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "5b85f8102134f78f",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 100,
+        "y": 840,
+        "wires": [
+            [
+                "9a6225cb56ed7b67",
+                "34d21138560ad6aa"
+            ]
+        ]
+    },
+    {
+        "id": "9a6225cb56ed7b67",
+        "type": "ui_text",
+        "z": "c1459de4486b7052",
+        "group": "3ccdc502234ac266",
+        "order": 2,
+        "width": 7,
+        "height": 1,
+        "name": "",
+        "label": "Kondisi Air :",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "className": "",
+        "style": true,
+        "font": "Palatino Linotype,Palatino,Book Antiqua,serif",
+        "fontSize": "18",
+        "color": "#000000",
+        "x": 290,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "72851e5b7af1c050",
+        "type": "switch",
+        "z": "c1459de4486b7052",
+        "name": "Status Pakan",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Pakan1, Telah Diberikan",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Pakan2, Telah Diberikan",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 290,
+        "y": 500,
+        "wires": [
+            [
+                "2375d09915b56c27"
+            ],
+            [
+                "5bd18c8521970fe0"
+            ]
+        ]
+    },
+    {
+        "id": "b236cbf6fa5c7b7b",
+        "type": "telegram sender",
+        "z": "c1459de4486b7052",
+        "name": "",
+        "bot": "8d50e154684ac78e",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1050,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2375d09915b56c27",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "function 1",
+        "func": "msg.payload = {\n    chatId: \"5861536160\",\n    type: \"message\",\n    content: \"✅ Pakan1, Telah Diberikan.\"\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 460,
+        "wires": [
+            [
+                "b236cbf6fa5c7b7b"
+            ]
+        ]
+    },
+    {
+        "id": "5bd18c8521970fe0",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "function 2",
+        "func": "msg.payload = {\n    chatId: \"5861536160\",\n    type: \"message\",\n    content: \"✅ Pakan2, Telah Diberikan.\"\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 540,
+        "wires": [
+            [
+                "b236cbf6fa5c7b7b"
+            ]
+        ]
+    },
+    {
+        "id": "a132ea7f4c6f0f27",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "function 3",
+        "func": "msg.payload = {\n    chatId: \"5861536160\",\n    type: \"message\",\n    content: \"⚠️ Pelet Tersisa \" + msg.payload + \"%, Segera isi ulang!\"\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 600,
+        "wires": [
+            [
+                "bfac34098356c56b"
+            ]
+        ]
+    },
+    {
+        "id": "23b6d8508637fe3e",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "function 4",
+        "func": "msg.payload = {\n    chatId: \"5861536160\",\n    type: \"message\",\n    content: \"⚠️ Suhu Air Tinggi!, Saat Ini \" + msg.payload + \"°C.\"\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 760,
+        "wires": [
+            [
+                "b11f2adc5c7cfae4"
+            ]
+        ]
+    },
+    {
+        "id": "c8bf4e49999b1856",
+        "type": "switch",
+        "z": "c1459de4486b7052",
+        "name": "Level pelet",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lt",
+                "v": "20",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 290,
+        "y": 620,
+        "wires": [
+            [
+                "a132ea7f4c6f0f27"
+            ]
+        ]
+    },
+    {
+        "id": "fb725835e04102bc",
+        "type": "switch",
+        "z": "c1459de4486b7052",
+        "name": "Suhu",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "33",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 110,
+        "y": 760,
+        "wires": [
+            [
+                "23b6d8508637fe3e"
+            ]
+        ]
+    },
+    {
+        "id": "34d21138560ad6aa",
+        "type": "switch",
+        "z": "c1459de4486b7052",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "KERUH",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 270,
+        "y": 900,
+        "wires": [
+            [
+                "65733f3dc72e6f1f"
+            ]
+        ]
+    },
+    {
+        "id": "65733f3dc72e6f1f",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "function 5",
+        "func": "msg.payload = {\n    chatId: \"5861536160\",\n    type: \"message\",\n    content: \"⚠️ Kondisi Air Sekarang Di Level KERUH!\"\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 900,
+        "wires": [
+            [
+                "299b183215512ea0"
+            ]
+        ]
+    },
+    {
+        "id": "bfac34098356c56b",
+        "type": "rbe",
+        "z": "c1459de4486b7052",
+        "name": "STOP SPAM",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 610,
+        "y": 600,
+        "wires": [
+            [
+                "b236cbf6fa5c7b7b"
+            ]
+        ]
+    },
+    {
+        "id": "b11f2adc5c7cfae4",
+        "type": "rbe",
+        "z": "c1459de4486b7052",
+        "name": "STOP SPAM",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 450,
+        "y": 760,
+        "wires": [
+            [
+                "b236cbf6fa5c7b7b"
+            ]
+        ]
+    },
+    {
+        "id": "299b183215512ea0",
+        "type": "rbe",
+        "z": "c1459de4486b7052",
+        "name": "STOP SPAM",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 650,
+        "y": 880,
+        "wires": [
+            [
+                "b236cbf6fa5c7b7b"
+            ]
+        ]
+    },
+    {
+        "id": "f7042f135046b1d2",
+        "type": "mqtt in",
+        "z": "c1459de4486b7052",
+        "name": "Esp32CAM",
+        "topic": "ESPCAM/gambar",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "5b85f8102134f78f",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 650,
+        "y": 340,
+        "wires": [
+            [
+                "ae344f47406aae21"
+            ]
+        ]
+    },
+    {
+        "id": "ae344f47406aae21",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "conversi to HTML",
+        "func": "msg.payload = \"<img src='data:image/jpeg;base64,\" + msg.payload + \"' width='580'/>\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 340,
+        "wires": [
+            [
+                "dc266a34a9f52faf",
+                "f30c97459a2eb800"
+            ]
+        ]
+    },
+    {
+        "id": "dc266a34a9f52faf",
+        "type": "ui_template",
+        "z": "c1459de4486b7052",
+        "group": "3bee25a9e0f36871",
+        "name": "",
+        "order": 1,
+        "width": 13,
+        "height": "9",
+        "format": "<div style=\"text-align:center\">\n    <div ng-bind-html=\"msg.payload\"></div>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1220,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f30c97459a2eb800",
+        "type": "trigger",
+        "z": "c1459de4486b7052",
+        "name": "On/Off",
+        "op1": "Online",
+        "op2": "Offline",
+        "op1type": "str",
+        "op2type": "str",
+        "duration": "30",
+        "extend": true,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 870,
+        "y": 400,
+        "wires": [
+            [
+                "1b6be15c135ab6a3"
+            ]
+        ]
+    },
+    {
+        "id": "edc4d9596a9c1a29",
+        "type": "ui_text",
+        "z": "c1459de4486b7052",
+        "group": "3bee25a9e0f36871",
+        "order": 3,
+        "width": 7,
+        "height": 1,
+        "name": "status esp32cam",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": true,
+        "font": "",
+        "fontSize": "18",
+        "color": "#000000",
+        "x": 1210,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "1b6be15c135ab6a3",
+        "type": "rbe",
+        "z": "c1459de4486b7052",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1030,
+        "y": 400,
+        "wires": [
+            [
+                "edc4d9596a9c1a29"
+            ]
+        ]
+    },
+    {
+        "id": "a972bfdb16c12e48",
+        "type": "switch",
+        "z": "c1459de4486b7052",
+        "name": "StatusEsp32",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Online",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Offline",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 630,
+        "y": 680,
+        "wires": [
+            [
+                "abe5e9ee74ebd290"
+            ],
+            [
+                "dfa04315cd0b2dcb"
+            ]
+        ]
+    },
+    {
+        "id": "abe5e9ee74ebd290",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "function 6",
+        "func": "msg.payload = {\n    chatId: \"5861536160\",\n    type: \"message\",\n    content: \"Esp-32, Online👍\"\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 660,
+        "wires": [
+            [
+                "30c809156edb98cf"
+            ]
+        ]
+    },
+    {
+        "id": "dfa04315cd0b2dcb",
+        "type": "function",
+        "z": "c1459de4486b7052",
+        "name": "function 7",
+        "func": "msg.payload = {\n    chatId: \"5861536160\",\n    type: \"message\",\n    content: \"Esp-32, Offline👎\"\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 720,
+        "wires": [
+            [
+                "30c809156edb98cf"
+            ]
+        ]
+    },
+    {
+        "id": "5b1379ef603c5d3b",
+        "type": "trigger",
+        "z": "c1459de4486b7052",
+        "name": "",
+        "op1": "Online",
+        "op2": "Offline",
+        "op1type": "str",
+        "op2type": "str",
+        "duration": "35",
+        "extend": true,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 290,
+        "y": 700,
+        "wires": [
+            [
+                "9480e9612df226ac"
+            ]
+        ]
+    },
+    {
+        "id": "9480e9612df226ac",
+        "type": "rbe",
+        "z": "c1459de4486b7052",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 470,
+        "y": 700,
+        "wires": [
+            [
+                "a972bfdb16c12e48"
+            ]
+        ]
+    },
+    {
+        "id": "935d7370f713c680",
+        "type": "debug",
+        "z": "c1459de4486b7052",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "30c809156edb98cf",
+        "type": "rbe",
+        "z": "c1459de4486b7052",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 970,
+        "y": 660,
+        "wires": [
+            [
+                "b236cbf6fa5c7b7b"
+            ]
+        ]
+    },
+    {
+        "id": "cf059481218b60c8",
+        "type": "ui_gauge",
+        "z": "c1459de4486b7052",
+        "name": "pelet",
+        "group": "5c1d0217cdc361cf",
+        "order": 2,
+        "width": 7,
+        "height": 7,
+        "gtype": "wave",
+        "title": "",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 270,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "233ba82d89856687",
+        "type": "ui_spacer",
+        "z": "c1459de4486b7052",
+        "name": "spacer",
+        "group": "3bee25a9e0f36871",
+        "order": 2,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "f4fa985eb937376b",
+        "type": "ui_spacer",
+        "z": "c1459de4486b7052",
+        "name": "spacer",
+        "group": "3bee25a9e0f36871",
+        "order": 4,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "2bcba33ae4516e00",
+        "type": "ui_group",
+        "name": "Atur Jadwal",
+        "tab": "fabe8e3546f7cd73",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5b85f8102134f78f",
+        "type": "mqtt-broker",
+        "name": "Broker",
+        "broker": "broker.mqtt-dashboard.com",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": "105",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "66105bbcfc927517",
+        "type": "ui_group",
+        "name": "Info jadwal",
+        "tab": "fabe8e3546f7cd73",
+        "order": 2,
+        "disp": true,
+        "width": 7,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "3ccdc502234ac266",
+        "type": "ui_group",
+        "name": "Info Air",
+        "tab": "fabe8e3546f7cd73",
+        "order": 3,
+        "disp": true,
+        "width": 7,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "8d50e154684ac78e",
+        "type": "telegram bot",
+        "botname": "PempaLe_Bot",
+        "usernames": "",
+        "chatids": "5861536160",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "3bee25a9e0f36871",
+        "type": "ui_group",
+        "name": "KAMERA",
+        "tab": "fabe8e3546f7cd73",
+        "order": 4,
+        "disp": true,
+        "width": 13,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5c1d0217cdc361cf",
+        "type": "ui_group",
+        "name": "Sisa Pelet",
+        "tab": "fabe8e3546f7cd73",
+        "order": 5,
+        "disp": true,
+        "width": "7",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "fabe8e3546f7cd73",
+        "type": "ui_tab",
+        "name": "LeleCare",
+        "icon": "Waktu",
+        "disabled": false,
+        "hidden": false
+    }
+]
